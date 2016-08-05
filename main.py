@@ -23,6 +23,12 @@ class GlacierUploader:
         self.multipart_upload_id = response.get('uploadId')
 
     @property
+    def pending_jobs(self):
+        response = self.glacier.list_jobs(vaultName=self.vault)
+        job_list = response.get('JobList')
+        return [i.get('JobId') for i in job_list if not i.get('Completed')]
+
+    @property
     def multipart_upload_ids(self):
         response = self.glacier.list_multipart_uploads(vaultName=self.vault)
         return [i.get('MultipartUploadId') for i in response.get('UploadsList')]
